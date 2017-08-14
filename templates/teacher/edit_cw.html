@@ -1,0 +1,32 @@
+{% extends "teacher/base.html" %}
+{% block title %}Edit Coursework{% endblock %}
+{% block content %}
+<h1>Coursework Details for {{ coursework.name }}:</h1>
+    {% if cw_form %}
+    <a href="{% url 'view_cw' coursework.id %}">View Results</a>
+    {% endif %}
+    <p></p>
+    <form method="POST" action="" enctype="multipart/form-data">
+        {% csrf_token %}
+        {{ cw_form }}
+        {% if creating %}
+            <label for="id_descriptor">Files for Coursework descriptor:</label><input id="id_descriptor" multiple="multiple" name="descriptor" type="file" required="">
+            <label for="id_oracle_exec">Files for Oracle implementation:</label><input id="id_oracle_exec" multiple="multiple" name="oracle_exec" type="file" required="">
+            <label for="id_signature">Files for Signature test:</label><input id="id_signature" multiple="multiple" name="signature" type="file" required="">
+        {% endif %}
+        <input type="submit" value="Save">
+    </form>
+    <p></p>
+    {% for sub, files in submissions %}
+    <form method="POST" action="{% url 'update_content' %}" enctype="multipart/form-data">
+        {% csrf_token %}
+        <h3>{{ sub.display_name }}</h3>
+        <input id="id_new_content" multiple="multiple" name="new_content" type="file" required="" />
+        <input type="hidden" required="" value="{{ sub.id }}" name="old_id" />
+        <input type="submit" value="Submit new files to replace current" />
+        {% for file in files %}
+            <a href="{% url 'download_file' sub.id file %}?show=1" class="file">{{ file }}</a>
+        {% endfor %}
+    </form>
+    {% endfor %}
+{% endblock %}

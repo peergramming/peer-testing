@@ -1,0 +1,14 @@
+{% extends "student/base.html" %}
+{% block title %}Choose a Coursework{% endblock %}
+{% block content %}
+    {% if courseworks %}
+        <h1>Choose a coursework to view:</h1>
+        {% for id, state, course, title in courseworks %}
+            <p><a href="{% url 'cw' id %}" class="coursework coursework_{{ state }}"
+            >{{ course }}:
+                {{ title }}</a></p>
+        {% endfor %}
+    {% else %}
+        <div>No coursework tasks available right now</div>
+    {% endif %}
+{% endblock %}

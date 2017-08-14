@@ -1,0 +1,17 @@
+#file_viewer_controls {
+    width: 100%;
+    min-height: 20px;
+    max-height: 40px;
+    display: flex;
+    align-items: center;
+}
+
+#file_viewer_controls button {
+    flex-grow: 1;
+    min-height: 18px;
+    max-height: 36px;
+}
+
+main {
+    font-size: 12px;
+}

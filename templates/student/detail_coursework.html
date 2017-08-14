@@ -1,0 +1,109 @@
+{% extends "student/base.html" %}
+{% block title %}Detail Coursework{% endblock %}
+{% block content %}
+    <h1>{{ cw.course.code }}: {{ cw.name }}</h1>
+    <div class="submission">
+    <p>Attached files:</p>
+    <ul>
+    {% for sub, files in descriptors %}
+        {% for file in files %}
+        <li><a href="{% url 'download_file' sub.id file %}?show=1">{{ file }}</a></li>
+        {% endfor %}
+    {% endfor %}
+    </ul>
+    </div>
+
+    <section id="tasklist">
+    <h2>Your Tasks:</h2>
+    {% if subs_open %}
+        <h3>Current Task: Write your solution</h3>
+        <ul>
+        <li>You should now develop a solution to the coursework described in the above files.</li>
+        <li>You should upload a solution to the website</li>
+        <li>You can re-upload a new solution before the deadline</li>
+        <li>You are encouraged to write test cases and upload these to the website to test.</li>
+        </ul>
+        <h4>Later: Test your Peers</h4>
+    {% endif %}
+    {% if feedback_open %}
+        <h4>☑ Write your solution</h4>
+        <h3>Current Task: Test your Peers</h3>
+        <ul>
+        <li>You should now either use your own test cases, or write new ones to investigate the correctness of your peer’s solution</li>
+        <li>You should run these test cases</li>
+        <li>You should give feedback on the results</li>
+        </ul>
+    {% endif %}
+    {% if not subs_open and not feedback_open %}
+        <h4>☑ Write your solution</h4>
+        <h4>☑ Test your Peers</h4>
+        This coursework has closed
+    {% endif %}
+    </section>
+
+    <p></p>
+    <h2>My Submissions</h2>
+    <div class="submission solution">
+    {% if subs_open %}
+    <a href="{% url 'solution' cw.id %}">(Re-)Submit Solution</a>
+    {% endif %}
+    {% for sub, files in solution %}
+        <h3>{{ sub.display_name }}</h3>
+        <ul>
+        {% for f in files%}
+            <li><a href="{% url 'download_file' sub.id f %}?show=1">{{ f }}</a></li>
+        {% endfor %}
+        </ul>
+    {% endfor %}
+    </div>
+    <p></p>
+    {% for sub, files, can_del in tests %}
+    <div class="submission test">
+        <h3>{{ sub.display_name }}</h3>
+        {% if can_del %}
+        <form action="{% url 'delsub'%}" method="post" onsubmit="return window.confirm('Are you sure you want to delete {{sub.display_name}}?);">
+            {% csrf_token %}
+            <input type="hidden" name="sub_id" value="{{sub.id}}" />
+            <input type="Submit" value="❌ Delete this Test Case" />
+        </form>
+        {% endif %}
+        <ul>
+        <a href="{% url 'test' cw.id sub.id%}">Replace test with new Version</a>
+        {% for f in files%}
+            <li><a href="{% url 'download_file' sub.id f %}?show=1">{{ f }}</a></li>
+        {% endfor %}
+        </ul>
+    </div>
+    {% endfor %}
+    {% if subs_open %}
+    <a href="{% url 'test' cw.id ''%}">Submit New Test Case</a>
+    {% endif %}
+    {% if feedback_open %}
+    <a href="{% url 'test' cw.id ''%}">Submit New Test Case</a>
+    {% endif %}
+
+    {% for match_form, tms, name, message in testing_data %}
+        <p></p>
+        <h2>{{ name }}</h2>
+        <p>{{ message | safe }}</p>
+        {% if subs_open %}
+            <form action="{% url 'make_tm_student' cw.id %}" method="POST">
+                {% csrf_token %}
+                {{ match_form }}
+                <input type="submit" value="Run Test" />
+            </form>
+        {% endif %}
+        {% if feedback_open %}
+            <form action="{% url 'make_tm_student' cw.id %}" method="POST">
+                {% csrf_token %}
+                {{ match_form }}
+                <input type="submit" value="Run Test" />
+            </form>
+        {% endif %}
+        <p>View results for running tests:</p>
+        <ul>{% for tm, sol, test in tms %}
+            <li>[<a href="{% url 'tm' tm.id %}">view</a>] {{ sol }} (v{{tm.solution_version}}) against {{ test }} (v{{tm.test_version}})</li>
+        {% endfor %}</ul>
+
+    {% endfor %}
+{% endblock %}

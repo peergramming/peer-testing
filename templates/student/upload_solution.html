@@ -1,0 +1,21 @@
+{% extends "student/base.html" %}
+{% block title %}Upload Coursework File{% endblock %}
+{% block content %}
+<h1>{{ msg }}</h1>
+    {% if allow_upload %}
+        <p>
+            You should select the files you want to include in your solution
+            <br/>
+            To select multiple files, press & hold Ctrl and click the files you want to upload
+        </p>
+        <form action="{%url 'submit' cw.id %}" method="post" enctype="multipart/form-data">
+            {% csrf_token %}
+            <input type="hidden" name="re_version" required="" value="{{ old_id }}" />
+            <input type="hidden" name="file_type" required="" value="{{ file_type }}" />
+            <label for="id_chosen_files">Selected files:</label><input id="id_chosen_files" multiple="multiple" name="chosen_files" type="file" required="">
+            <input type="submit">
+        </form>
+    {% else %}
+        <p>Unfortunately, you can't upload files of this type right now</p>
+    {% endif %}
+{% endblock %}

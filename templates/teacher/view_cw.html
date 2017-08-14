@@ -1,0 +1,107 @@
+{% extends "teacher/base.html" %}
+{% load comments %}
+{% block title %}View Coursework{% endblock %}
+{% block content %}
+<h1>Coursework Details for {{ coursework.name }}:</h1>
+    <a href="{% url 'edit_cw' coursework.id %}">Edit Coursework</a>
+    <p></p>
+    <h2>Coursework Files</h2>
+    <table class="styled">
+    <thead>
+    <tr>
+        <th>ID</th>
+        <th>Type</th>
+        <th>Creator</th>
+        <th>Name</th>
+        <th>Files</th>
+        <th>View</th>
+    </tr>
+    </thead>
+    {% for s, files in submissions %}
+    {% for f in files %}
+        <tr>
+        <td>{{ s.id }} (v.{{ s.latest_version }})</td>
+        <td>{{ s.type }}</td>
+        <td>{{ s.creator }}</td>
+        <td>{{ s.display_name }}</td>
+        <td>{{ f }}</td>
+        <td><a href="{% url 'download_file' s.id f %}?show=1">View</a></td>
+        </tr>
+    {% endfor %}
+    {% endfor %}
+    </table>
+
+    <p></p>
+    <h2>Make a new Test Match</h2>
+    <form action="{% url 'make_tm' coursework.id %}" method="POST">
+        {% csrf_token %}
+        {{ tm_form }}
+        <input type="submit" value="Create test match"/>
+    </form>
+
+    <p></p>
+    <h2>Feedback Grouping</h2>
+    <form action="" method="post" class="hidden" id="group_form_template">
+        {% csrf_token %}
+        {{ feedback_form }}
+        <button onclick="$.post('{% url 'modify_feedback_group' %}', $(this).parent().serialize());">Save</button>
+        <button onclick="if(confirm('Delete This Group?')){
+            $.post('{% url 'delete_feedback_group' %}', $(this).parent().serialize())}" >Delete</button>
+    </form>
+    <form action="{% url 'export_feedback_groups' %}" method="post">
+        {% csrf_token %}
+        <input type="hidden" name="coursework_id" value="{{coursework.id}}">
+        <label for="sub_export">Click to Export Groups: </label><input id="sub_export" type="submit" value="Export">
+    </form>
+    <form action="{% url 'import_feedback_groups' %}" method="post">
+        {% csrf_token %}
+        <input type="hidden" name="coursework_id" value="{{coursework.id}}">
+        <label for="txt_json">Paste JSON Data: </label><input id="txt_json" type="text" name="json_data" required="true">
+        <label for="sub_import">Click to Import Groups: </label><input id="sub_import" type="submit" value="Import">
+    </form>
+    <div id="feedback_group_forms">
+    {% for form in feedback_forms %}
+        <form action="" method="post" >
+            {% csrf_token %}
+            {{ form }}
+            <button onclick="$.post('{% url 'modify_feedback_group' %}', $(this).parent().serialize());">Save</button>
+        <button onclick="if(confirm('Delete This Group?')){
+            $.post('{% url 'delete_feedback_group' %}', $(this).parent().serialize())}" >Delete</button>
+        </form>
+    {% endfor %}
+    </div>
+    <button onclick="var clone = $('#group_form_template').clone();
+                    clone.removeClass('hidden');
+                    $('#feedback_group_forms').append(clone);">+ Group</button>
+
+    <p></p>
+    <h2>Test Match Results</h2>
+    <table class="styled">
+    <thead>
+    <tr>
+        <th>ID / View</th>
+        <th>Test</th>
+        <th>Solution</th>
+        <th>Feedback</th>
+        <th>Run Output</th>
+        <th>Test Type</th>
+    </tr>
+    </thead>
+    {% for f in results %}
+        <tr>
+            <td><a href="{% url 'tm' f.id %}">{{ f.id }}</a></td>
+        <td>{%  if f.test %}
+            {{f.test.creator.username }} {{ f.test.display_name }} (v.{{ f.test_version }})
+        {% endif %}</td>
+        <td>{%  if f.solution %}
+           {{f.solution.creator.username }} {{ f.solution.display_name }} (v.{{ f.solution_version }})
+        {% endif %}</td>
+        {% get_comment_count for f as comment_count %}
+        <td>{{ comment_count }} Comments</td>
+        <td>{% if f.error_level == 0 %}Success{% elif f.error_level != None %}E: {{ f.error_level }}{% else %}Queued...{% endif %}</td>
+        <td>{{ f.type }}</td>
+        </tr>
+    {% endfor %}
+    </table>
+    <a href="{% url 'run_all_test_in_cw' coursework.id %}">Run all queued tests</a>
+{% endblock %}

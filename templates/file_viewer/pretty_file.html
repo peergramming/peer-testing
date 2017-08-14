@@ -1,0 +1,17 @@
+{% extends "common/base.html" %}
+{% load static %}
+{% block title %}{{filename}}{%endblock%}
+{% block header %}
+<link id="pygment_style" rel="stylesheet" type="text/css" href="{% static "file_viewer/css/pygments.css" %}" />
+<link rel="stylesheet" type="text/css" href="{% static "file_viewer/css/file_viewer_control.css" %}" />
+<div id="file_viewer_controls">
+    <button id="textup">Text Increase</button>
+    <button id="textdown">Text Decrease</button>
+    <button id="highlight">Toggle Syntax Highlighting</button>
+    <button id="download">Download File</button>
+</div>
+{% endblock %}
+{% block content %}
+{{ content|safe }}
+<script type="text/javascript" src="{% static 'file_viewer/js/file_viewer.js' %}" ></script>
+{%endblock%}

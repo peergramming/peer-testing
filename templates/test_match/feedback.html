@@ -1,0 +1,62 @@
+{% extends 'student/base.html' %}
+{% load comments %}
+{% load static %}
+{% block title %}Feedback{% endblock %}
+{% block content %}
+    <link rel="stylesheet" type="text/css" href="{% static "test_match/css/feedback.css" %}" />
+    <div id="feedback_container">
+        <div id="file_view_container">
+            <div id="file_tabs">
+                {% for filename in test_files %}
+                    <span class="file_tab test inactive" data-id="{{ test_match.test.id }}{{ filename }}">
+                        <span class="sub_name">{{ test_name }}]</span>{{ filename }}</span>
+                {% endfor %}
+                {% for filename in solution_files %}
+                    <span class="file_tab solution inactive" data-id="{{ test_match.solution.id }}{{ filename }}">
+                        <span class="sub_name">[{{ solution_name }}]</span>{{ filename }}</span>
+                {% endfor %}
+                {% for filename in result_files %}
+                    <span class="file_tab result inactive" data-id="{{ test_match.result.id }}{{ filename }}">{{ filename }}</span>
+                {% endfor %}
+            </div>
+            <div id="file_view">
+                {% for filename in test_files %}
+                    <iframe src="{% url 'download_versioned_file' test_match.test.id test_match.test_version filename%}?show=1&context={{test_match.id}}"
+                            data-id="{{ test_match.test.id }}{{ filename }}" class="file_view test inactive"></iframe>
+                {% endfor %}
+                {% for filename in solution_files %}
+                    <iframe src="{% url 'download_versioned_file' test_match.solution.id test_match.solution_version filename%}?show=1&context={{test_match.id}}"
+                            data-id="{{ test_match.solution.id }}{{ filename }}" class="file_view solution inactive"></iframe>
+                {% endfor %}
+                {% for filename in result_files %}
+                    <iframe src="{% url 'download_file' test_match.result.id filename%}?show=1&context={{test_match.id}}"
+                            data-id="{{ test_match.result.id }}{{ filename }}" class="file_view result inactive"></iframe>
+                {% endfor %}
+                <p class="active">Select a file on the left to view it</p>
+            </div>
+        </div>
+        <div id="feedback_input">
+            {% for date, comment, user in comment_list %}
+                <div class="comment">
+                    <h4>{{ user }} on {{ date }}</h4>
+                    <p>{{ comment }}</p>
+                </div>
+            {% endfor %}
+            {% if can_submit %}
+                {% get_comment_form for test_match as form %}
+                <form action="{% comment_form_target %}" method="POST">
+                    {% csrf_token %}
+                    {{ form.comment }}
+                    {{ form.honeypot }}
+                    {{ form.content_type }}
+                    {{ form.object_pk }}
+                    {{ form.timestamp }}
+                    {{ form.security_hash }}
+                    <input type="hidden" name="next" value="{% url 'tm' test_match.id %}" />
+                    <input type="submit" value="Add comment" id="id_submit" />
+                </form>
+            {% endif %}
+        </div>
+    </div>
+    <script type="text/javascript" src="{% static 'test_match/js/feedback.js' %}" ></script>
+{% endblock %}
