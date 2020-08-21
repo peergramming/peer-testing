@@ -26,7 +26,7 @@ def user_can_upload_of_type(user, coursework, up_type):
     if coursework.state == m.CourseworkState.UPLOAD:
         return up_type in [m.SubmissionType.SOLUTION, m.SubmissionType.TEST_CASE]
     if coursework.state == m.CourseworkState.FEEDBACK:
-        return up_type in [m.SubmissionType.TEST_CASE]
+        return up_type in [m.SubmissionType.SOLUTION, m.SubmissionType.TEST_CASE]
     return False
 
 

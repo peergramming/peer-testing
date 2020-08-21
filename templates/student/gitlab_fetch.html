@@ -1,0 +1,33 @@
+{% extends "student/base.html" %}
+{% block title %}Fetch Coursework Files from GitLab-Student{% endblock %}
+{% block content %}
+    {% if allow_upload %}
+        <h1>{{ submission_msg }}</h1>
+        <p>
+            You can fetch the latest version of your
+            Solution files you committed to GitLab-Student.
+            <br/>
+            The files will be fetched from <code>{{ gitlab_repo }}</code>.
+        </p>
+        <form action="{%url 'fetch' cw.id %}" method="post" enctype="multipart/form-data">
+            {% csrf_token %}
+            <input type="hidden" name="file_type" required="" value="{{ file_type_solution }}" />
+            <input type="submit" value="Fetch Solution from GitLab-Student"/>
+        </form>
+
+        <h1>{{ test_msg }}</h1>
+        <p>
+            You can fetch the latest version of your
+            Test Case file you committed to GitLab-Student.
+            <br/>
+            The files will be fetched from <code>{{ gitlab_repo }}</code>.
+        </p>
+        <form action="{%url 'fetch' cw.id %}" method="post" enctype="multipart/form-data">
+            {% csrf_token %}
+            <input type="hidden" name="file_type" required="" value="{{ file_type_test }}" />
+            <input type="submit" value="Fetch Test Case from GitLab-Student"/>
+        </form>
+	{% else %}
+        <p>Unfortunately, you can't upload files of this type right now</p>
+    {% endif %}
+{% endblock %}

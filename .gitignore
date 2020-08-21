@@ -1,7 +1,28 @@
-patool/local.py
+# Django settings
+main/local.py
+main/secret.py
+common/migrations/*
+feedback/migrations/*
 var/
 *.sqlite3
+.idea/dataSources/*
+.idea/workspace.xml
 
+# ignore everything in libraries except the files we want to distribute
+libs/*
+!libs/junit.sh
+!libs/python.sh
+!libs/junit.jar
+!libs/hamcrest.jar
+
+# CSV configurations
+roles.csv
+groups.csv
+
+#dont ignore cw pdfs
+!test_examples/CW1/*.pdf
+!test_examples/CW2/*.pdf
+!test_examples/*.pdf
 
 # Windows image file caches
 Thumbs.db
@@ -103,10 +124,6 @@ coverage.xml
 *.mo
 *.pot
 
-# Django stuff:
-*.log
-local_settings.py
-
 # Flask stuff:
 instance/
 .webassets-cache
@@ -142,3 +159,6 @@ ENV/
 
 # Rope project settings
 .ropeproject
+
+# VSCODE
+.vscode

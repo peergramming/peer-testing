@@ -1,11 +1,33 @@
 {% extends "teacher/base.html" %}
 {% block title %}Edit Coursework{% endblock %}
 {% block content %}
+{% if creating %}
+<h1>New Coursework Details:</h1>
+{% else %}
 <h1>Coursework Details for {{ coursework.name }}:</h1>
     {% if cw_form %}
-    <a href="{% url 'view_cw' coursework.id %}">View Results</a>
+    <a href="{% url 'edit_cw_groups' coursework.id %}">Edit groups</a>
+    <a href="{% url 'view_cw_files' coursework.id %}">View Files</a>
+    <a href="{% url 'view_cw_tms' coursework.id %}">View Results</a>
+    <a href="{% url 'view_cw_comments' coursework.id %}">View Comments</a>
     {% endif %}
+{%endif %}
     <p></p>
+    <p>For GitLab automatic fetching, the coursework name should be the same as the project name on GitLab</p>
+    <div>Autofill for
+            <a href="#" onclick="
+        document.querySelector('#id_execute_script').value='python.sh';
+        document.querySelector('#id_test_path_re').value='.*Test\.py';
+        document.querySelector('#id_sol_path_re').value='.*[^Test]\.py'" >Python unit test</a> 
+        / <a href="#" onclick="
+        document.querySelector('#id_execute_script').value='junit.sh';
+        document.querySelector('#id_test_path_re').value='.*Test\.java';
+        document.querySelector('#id_sol_path_re').value='.*[^Test]\.java'" >Java Junit</a>
+        / <a href="#" onclick="
+        document.querySelector('#id_execute_script').value='';
+        document.querySelector('#id_test_path_re').value='.*';
+        document.querySelector('#id_sol_path_re').value='.*'" >No Test Runner</a>
+    </div>
     <form method="POST" action="" enctype="multipart/form-data">
         {% csrf_token %}
         {{ cw_form }}

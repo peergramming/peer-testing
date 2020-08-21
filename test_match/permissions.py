@@ -21,7 +21,10 @@ def user_feedback_mode(user, test_match_instance):
     if not p.can_view_coursework(user, cw):
         return TestMatchMode.DENY
     if p.is_teacher(user):
-        return TestMatchMode.READ
+        # Would se this to READ so that teacher do not comment
+        # but WRITE needed to demo with teacher account
+        #return TestMatchMode.READ
+        return TestMatchMode.WRITE
     if p.user_is_self_testing(user, test_match_instance):
         return state_given_error_level(test_match_instance, TestMatchMode.READ)
     if tac.user_has_test_access(user, test_match_instance):

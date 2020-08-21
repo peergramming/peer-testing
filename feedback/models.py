@@ -37,7 +37,6 @@ class TestAccessControl(m.Model):
     def user_has_test_access(user, test_match_instance):
         """Return whether or not a user is a member of the
         feedback group for a given test match"""
-        print(test_match_instance)
         tacs = TestAccessControl.objects.filter(test=test_match_instance)
         if not tacs.exists():
             return False
@@ -62,8 +61,6 @@ class TestAccessControl(m.Model):
         if not tacs.exists():
             return False
         tac = tacs.first()
-        print("got here - "+str(submission)+" "+str(test_context))
-        print(tac.test.solution_version)
         return ((tac.test.solution == submission and tac.test.solution_version == ver) or
                 (tac.test.test == submission and tac.test.test_version == ver) or
                 tac.test.result == submission) and \

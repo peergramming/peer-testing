@@ -1,0 +1,39 @@
+{% extends "teacher/base.html" %}
+{% load comments %}
+{% block title %}View Coursework{% endblock %}
+{% block content %}
+<h1>Coursework Group Details for {{ coursework.name }}:</h1>
+    <h2>Feedback Grouping</h2>
+    <form action="" method="post" class="hidden" id="group_form_template">
+        {% csrf_token %}
+        {{ feedback_form }}
+        <button onclick="$.post('{% url 'modify_feedback_group' %}', $(this).parent().serialize());">Save</button>
+        <button onclick="if(confirm('Delete This Group?')){
+            $.post('{% url 'delete_feedback_group' %}', $(this).parent().serialize())}" >Delete</button>
+    </form>
+    <form action="{% url 'export_feedback_groups' %}" method="post">
+        {% csrf_token %}
+        <input type="hidden" name="coursework_id" value="{{coursework.id}}">
+        <label for="sub_export">Click to Export Groups: </label><input id="sub_export" type="submit" value="Export">
+    </form>
+    <form action="{% url 'import_feedback_groups' %}" method="post">
+        {% csrf_token %}
+        <input type="hidden" name="coursework_id" value="{{coursework.id}}">
+        <label for="txt_json">Paste JSON Data: </label><input id="txt_json" type="text" name="json_data" required="true">
+        <label for="sub_import">Click to Import Groups: </label><input id="sub_import" type="submit" value="Import">
+    </form>
+    <div id="feedback_group_forms">
+    {% for form in feedback_forms %}
+        <form action="" method="post" >
+            {% csrf_token %}
+            {{ form }}
+            <button onclick="$.post('{% url 'modify_feedback_group' %}', $(this).parent().serialize());">Save</button>
+        <button onclick="if(confirm('Delete This Group?')){
+            $.post('{% url 'delete_feedback_group' %}', $(this).parent().serialize())}" >Delete</button>
+        </form>
+    {% endfor %}
+    </div>
+    <button onclick="var clone = $('#group_form_template').clone();
+                    clone.removeClass('hidden');
+                    $('#feedback_group_forms').append(clone);">+ Group</button>
+{% endblock %}

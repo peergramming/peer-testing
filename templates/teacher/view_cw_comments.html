@@ -1,0 +1,10 @@
+{% extends "teacher/base.html" %}
+{% load comments %}
+{% block title %}View Coursework Comments{% endblock %}
+{% block content %}
+<h1>Comments for {{ coursework.name }}:</h1>
+        <div>
+            {{comment_list|safe}}
+        </div>
+    </div>
+{% endblock %}

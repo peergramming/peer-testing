@@ -45,11 +45,12 @@ def render_file(request, file, filename):
         response = FileResponse(open(file, "rb"))
         response['Content-Type'] = str(guess_type(filename, False)[0])
         return response
-    with open(file, "r") as open_file:
+    with open(file, mode="r", encoding="utf-8", errors='ignore') as open_file:
         content = open_file.read()
-    lexer = pygments.lexers.get_lexer_for_mimetype(mime[0])
+    lexermime = 'text/x-java' if mime[0] == 'text/x-java-source' else mime[0]
+    lexer = pygments.lexers.get_lexer_for_mimetype(lexermime)
     detail = {
-        "content": pyghi(content, lexer, pygform.HtmlFormatter(linenos='table')),
+        "content": pyghi(content, lexer, pygform.HtmlFormatter(encoding='utf-8',linenos='table')),
         "filename": filename
     }
     return render(request, 'file_viewer/pretty_file.html', detail)

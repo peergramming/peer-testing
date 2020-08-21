@@ -5,7 +5,7 @@ from . import models as m
 class FeedbackGroupForm(f.Form):
     """Form used to change students in a group, comma separated usernames"""
     students = f.CharField(widget=f.Textarea, label="Comma-Separated Users in this group")
-    groupid = f.CharField(max_length=64, widget=f.HiddenInput, required=False)
+    groupid = f.CharField(max_length=64, required=False)
     coursework = f.SlugField(max_length=8, widget=f.HiddenInput)
 
 

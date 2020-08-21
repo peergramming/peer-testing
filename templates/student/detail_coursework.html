@@ -1,4 +1,5 @@
 {% extends "student/base.html" %}
+{% load comments %}
 {% block title %}Detail Coursework{% endblock %}
 {% block content %}
     <h1>{{ cw.course.code }}: {{ cw.name }}</h1>
@@ -43,12 +44,20 @@
 
     <p></p>
     <h2>My Submissions</h2>
+    <div class="fetch">
+    {% if subs_open %}
+    <p>  
+      <b><a href="{% url 'fetch' cw.id %}">Fetch (new) Solution and Test
+	Case from GitLab-Student</a></b>
+    </p>
+    {% endif %}
+    </div>
     <div class="submission solution">
     {% if subs_open %}
-    <a href="{% url 'solution' cw.id %}">(Re-)Submit Solution</a>
+    <!-- <a href="{% url 'solution' cw.id %}">(Re-)Submit Solution</a> -->
     {% endif %}
     {% for sub, files in solution %}
-        <h3>{{ sub.display_name }}</h3>
+        <h3>{{ sub.display_name }} (v{{ sub.latest_version }})</h3>
         <ul>
         {% for f in files%}
             <li><a href="{% url 'download_file' sub.id f %}?show=1">{{ f }}</a></li>
@@ -68,32 +77,22 @@
         </form>
         {% endif %}
         <ul>
-        <a href="{% url 'test' cw.id sub.id%}">Replace test with new Version</a>
+        <!-- <a href="{% url 'test' cw.id sub.id%}">Replace test with new Version</a>-->
         {% for f in files%}
             <li><a href="{% url 'download_file' sub.id f %}?show=1">{{ f }}</a></li>
         {% endfor %}
         </ul>
     </div>
     {% endfor %}
-    {% if subs_open %}
-    <a href="{% url 'test' cw.id ''%}">Submit New Test Case</a>
-    {% endif %}
-    {% if feedback_open %}
-    <a href="{% url 'test' cw.id ''%}">Submit New Test Case</a>
+    {% if subs_open or feedback_open %}
+    <!-- <a href="{% url 'test' cw.id ''%}">Submit New Test Case</a> -->
     {% endif %}
 
     {% for match_form, tms, name, message in testing_data %}
         <p></p>
         <h2>{{ name }}</h2>
         <p>{{ message | safe }}</p>
-        {% if subs_open %}
-            <form action="{% url 'make_tm_student' cw.id %}" method="POST">
-                {% csrf_token %}
-                {{ match_form }}
-                <input type="submit" value="Run Test" />
-            </form>
-        {% endif %}
-        {% if feedback_open %}
+        {% if subs_open or feedback_open %}
             <form action="{% url 'make_tm_student' cw.id %}" method="POST">
                 {% csrf_token %}
                 {{ match_form }}
@@ -102,7 +101,20 @@
         {% endif %}
         <p>View results for running tests:</p>
         <ul>{% for tm, sol, test in tms %}
-            <li>[<a href="{% url 'tm' tm.id %}">view</a>] {{ sol }} (v{{tm.solution_version}}) against {{ test }} (v{{tm.test_version}})</li>
+            <li>[<a href="{% url 'tm' tm.id '' %}">view</a>] {{ sol }} (v{{tm.solution_version}}) against {{ test }} (v{{tm.test_version}})
+	    {% get_comment_count for tm as comment_count %}
+              {%  if comment_count == 0 %}
+	      with no comment
+	      {% else %}
+	      with <b>{{ comment_count }} comment{% if comment_count != 1 %}s{% endif %}</b>
+	      {% get_comment_list for tm as comment_list %}
+
+	      {% for comment in comment_list %}
+	        {% if forloop.last %} (latest comment was on {{ comment.submit_date }}) {% endif %}
+	      {% endfor %}
+
+	      {% endif %}
+	    </li>
         {% endfor %}</ul>
 
     {% endfor %}

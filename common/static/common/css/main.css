@@ -3,72 +3,54 @@
 html, body{
     padding: 0;
     margin: 0 auto;
-    background: #ddd;;
-    /*font-family: Georgia, 'Nimbus Roman No9 L', serif;*/
-    font-family: Arial, “Helvetica Neue”, Helvetica, sans-serif;
-    width: 100%;
+    font-family: sans-serif;
 }
 
+.hidden {display: none}
+
+/* top nav bar */
 nav {
-    height: 35px;
-    padding: 20px;
-    background: #555555;
+    padding: 5px;
+    background: #272727;
+    display: grid;
+    grid-template-columns: 4fr 1fr;
 }
 
-#nav_title {
-    float: left;
-    margin: 0;
-    height: 40px;
+nav, nav a, nav a:visited {
+    color: #fff;
 }
 
-#nav_title h1 {
+nav h1 {
     margin: 0;
     color: #FFF4BF;
-    font-weight: bold;
     text-shadow: 0 0 6px #000;
+    grid-column: 1/4;
 }
 
-#nav_title div{
-    float: left;
-    margin-left: 10px;
-}
-
-#userMenu {
-    float: right;
-}
-
-#userMenu, #userMenu a, #userMenu a:visited, #nav_title div, #nav_title a, #nav_title a:visited {
-    color: #efefef;
-    text-decoration: none;
-}
-
-#userMenu a:hover, #nav_title a:hover{
-    color: #efefef;
-    text-decoration: underline;
+nav #breadcrumbs {
+    grid-column: 1/5;
 }
 
 
+/* main content */
 main {
-    background: #fff;
     max-width: 1200px;
-    padding: 15px;
     margin: 0 auto;
-    min-height: calc(100vh - 110px);
 }
 
 @media screen and (max-width:1200px){
     main {
         max-width: 100%;
         width: 100%;
-        padding-left: 0;
-        padding-right: 0;
     }
 }
 
+/* put form inputs on their own lines */
 label, input {
     display: block;
 }
 
+/* coursework state descriptors */
 .coursework_f::before {
     content: '[accepting feedback]'
 }
@@ -91,11 +73,22 @@ a.coursework_f::before, a.coursework_u::before, a.coursework_c::before {
     text-decoration: none;
 }
 
+
+/* student coursework main page */
 #tasklist {
     border-radius: 5px;
-    border: 1px solid thistle;
-    background: lavender;
-    padding: 5px;
+    border: 1px solid rgb(78, 30, 78);
+}
+
+#tasklist > * {
+    margin: 10px;
+}
+
+#tasklist h2 {
+    background: rgb(78, 30, 78);
+    color: white;
+    margin: 0px;
+    padding: 10px;
 }
 
 .submission {
@@ -112,6 +105,7 @@ a.coursework_f::before, a.coursework_u::before, a.coursework_c::before {
     list-style: none;
 }
 
+/* teacher admin view */
 table.styled * {
     border: none;
 }
@@ -124,5 +118,3 @@ table.styled th {
 table.styled tr:nth-child(even){
     background-color: PowderBlue;
 }
-
-.hidden {display: none}

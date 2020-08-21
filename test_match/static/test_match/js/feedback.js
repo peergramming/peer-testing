@@ -12,5 +12,9 @@ $(".file_tab").on("click", function(){
         var selected = $(selector)
         selected.removeClass("inactive")
         selected.addClass("active")
+        if(dataid===""){
+                $("#file_view p").removeClass("inactive");
+                $("#file_view p").addClass("active");
+        }
 })
 });

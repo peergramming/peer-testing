@@ -1,0 +1,31 @@
+{% extends "teacher/base.html" %}
+{% load comments %}
+{% load static %}
+{% block title %}View Coursework{% endblock %}
+{% block content %}
+<h1>Uploaded files for {{ coursework.name }}:</h1>
+    <h2>Coursework Files</h2>
+    <table class="styled">
+    <thead>
+    <tr>
+        <th style="cursor:pointer" onclick="sortTable(0)">ID</th>
+        <th style="cursor:pointer" onclick="sortTable(1)">Type</th>
+        <th style="cursor:pointer" onclick="sortTable(2)">Creator</th>
+        <th style="cursor:pointer" onclick="sortTable(3)">Latest Version Time</th>
+        <th style="cursor:pointer" onclick="sortTable(4)">Name</th>
+        <th>Files</th>
+    </tr>
+    </thead>
+    {{ submissions | safe }}
+    </table>
+
+    <p></p>
+    <h2>Make a new Test Match</h2>
+    <form action="{% url 'make_tm' coursework.id %}" method="POST">
+        {% csrf_token %}
+        {{ tm_form }}
+        <input type="submit" value="Create test match"/>
+    </form>
+    
+    <script src="{% static "teacher/js/tablesort.js" %}"></script>
+{% endblock %}

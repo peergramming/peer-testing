@@ -1,0 +1,18 @@
+{% extends "teacher/base.html" %}
+{% block title %}Timeline for {{ student_name }}{% endblock %}
+{% block content %}
+{% load static %}
+<link rel="stylesheet" type="text/css" href="{% static "teacher/css/timeline.css" %}" />
+<h1>Timeline for {{ student_name }}</h1>
+<div class="timeline">
+{% for time, name, desc in events %}
+    <details>
+        <summary>
+            <b>{{name}}</b><br />
+            <time datetime="{{time}}">{{time}}</time>
+        </summary>
+        <p>{{desc}}</p>
+    </details>
+{% endfor %}
+</div>
+{% endblock %}

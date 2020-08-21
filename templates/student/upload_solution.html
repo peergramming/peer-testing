@@ -4,7 +4,7 @@
 <h1>{{ msg }}</h1>
     {% if allow_upload %}
         <p>
-            You should select the files you want to include in your solution
+            You should select the source files or scripts you want to include
             <br/>
             To select multiple files, press & hold Ctrl and click the files you want to upload
         </p>
@@ -15,7 +15,19 @@
             <label for="id_chosen_files">Selected files:</label><input id="id_chosen_files" multiple="multiple" name="chosen_files" type="file" required="">
             <input type="submit">
         </form>
-    {% else %}
+        <p>
+            You can fetch the latest version of the
+            files you committed to GitLab-Student.
+            <br/>
+            The files will be fetched from {{ gitlab_repo }}
+
+        </p>
+        <form action="{%url 'submit' cw.id %}" method="post"
+	      enctype="multipart/form-data">
+	    <input type="hidden" name="fetch" required="" value="fetch" />
+            <input type="submit">
+	</form>
+	{% else %}
         <p>Unfortunately, you can't upload files of this type right now</p>
     {% endif %}
 {% endblock %}

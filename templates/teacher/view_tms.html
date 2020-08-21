@@ -1,0 +1,26 @@
+{% extends "teacher/base.html" %}
+{% load comments %}
+{% load static %}
+{% block title %}View Coursework{% endblock %}
+{% block content %}
+<h1>Test Matches made for {{ coursework.name }}:</h1>
+    <h2>Test Match Results</h2>
+    <button onclick="window.location.href=window.location.href+'?csv'">Download as CSV</button>
+    <table class="styled">
+    <thead>
+    <tr>
+        <th style="cursor:pointer" onclick="sortTable(0)">ID / View</th>
+        <th style="cursor:pointer" onclick="sortTable(1)">Create Time</th>
+        <th style="cursor:pointer" onclick="sortTable(2)">Test</th>
+        <th style="cursor:pointer" onclick="sortTable(3)">Solution</th>
+        <th style="cursor:pointer" onclick="sortTable(4)">Feedback</th>
+        <th style="cursor:pointer" onclick="sortTable(5)">Run Output</th>
+        <th style="cursor:pointer" onclick="sortTable(6)">Test Type</th>
+    </tr>
+    </thead>
+    {{ results | safe }}
+    </table>
+
+    <a href="{% url 'run_all_test_in_cw' coursework.id %}">Run all queued tests</a>
+    <script src="{% static "teacher/js/tablesort.js" %}"></script>
+{% endblock %}

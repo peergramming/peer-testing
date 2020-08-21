@@ -14,8 +14,9 @@ class CourseForm(f.Form):
 class CourseworkForm(f.Form):
     name = f.CharField(label="Coursework Name", max_length=128)
     state = f.ChoiceField(label="Coursework State", choices=m.CourseworkState.POSSIBLE_STATES)
-    test_class = f.CharField(label="Test Class Name", max_length=128, required=False)
-    runtime = f.ChoiceField(label="Runtime", choices=m.CourseworkRuntimes.POSSIBLE_RUNTIMES)
+    sol_path_re = f.CharField(label='Regular Expression indicating where to look for SOLUTION files when fetching from gitlab', max_length=256)
+    test_path_re  = f.CharField(label='Regular Expression indicating where to look for TEST files when fetching from gitlab', max_length=256)
+    execute_script = f.CharField(label='Name of script to use when executing a test. Leave blank if no compilation needed', max_length=64, required=False)
 
 
 # noinspection PyClassHasNoInit

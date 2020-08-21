@@ -11,16 +11,23 @@
 <body>
     {% block header %}
         <nav>
-            <div id="nav_title">
-                <h1>{% block headertitle %}Student Peer Assessment Site{% endblock %}</h1>
-                <div id="breadcrumbs">
-{% block crumbs %}{% for title, url in crumbs %}<span> &gt; <a href="{{ url }}">{{ title }}</a></span>{% endfor %}{% endblock %}</div>
+            <h1>{% block headertitle %}Student Peer Testing Site{% endblock %}</h1>
+            <div id="userMenu">
+                {% if request.user.is_anonymous %}
+                    <div id="userMenu"><a href="#userMenu">Not logged in</a></div>
+                {% else %}
+                    {{ request.user.first_name }} {{ request.user.last_name }}
+                    ({{ request.user.username }}) - 
+                    <a href="{{ logout_url }}">(Log out)</a>
+                {% endif %}
             </div>
-            {% if request.user.is_anonymous %}
-                <div id="userMenu"><a href="#userMenu">Not logged in</a></div>
-            {% else %}
-                <div id="userMenu"> Logged in as {{ request.user }} - <a href="{% url 'logout'%}">(Log out)</a></div>
-            {% endif %}
+            <div id="breadcrumbs">
+                {% block crumbs %}
+                    {% for title, url in crumbs %}
+                        <span> &gt; <a href="{{ url }}">{{ title }}</a></span>
+                    {% endfor %}
+                {% endblock %}
+            </div>
         </nav>
     {% endblock %}
     <main>
